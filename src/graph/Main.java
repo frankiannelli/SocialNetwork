@@ -1,6 +1,10 @@
 package graph;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -44,39 +48,68 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
-
+//Initialize the graph with the index file not the friends file
+    //
     private static Graph loadFiles () throws IOException {
         try {
-            File friendsFile = new File("friends.txt");
-            FileInputStream friendsIs = new FileInputStream("friends.txt");
-            FileInputStream index = new FileInputStream("index.txt");
-            Scanner friendScanner = new Scanner(friendsIs);
-            Scanner indexScanner = new Scanner(index);
-            byte[] byteArray = new byte[(int)friendsFile.length()];
-            friendsIs.read(byteArray);
-            String data = new String(byteArray);
-            String[] stringArray = data.split("\r\n");
-            System.out.println("Number of lines in the file are ::"+stringArray.length);
+            FileInputStream friends = new FileInputStream("friends.txt");
+            Scanner friendScanner = new Scanner(friends);
+            int linesInFriendsFile = 0;
             int numberOfEdges = Integer.parseInt(friendScanner.nextLine());
-//            System.out.println(numberOfEdges);
-            if (friendScanner.hasNextLine()) {
-                friendScanner.nextLine();
-            }
+            linesInFriendsFile++;
+//            if (friendScanner.hasNextLine()) {
+//                linesInFriendsFile++;
+//                friendScanner.nextLine();
+//            }
+            Graph socialNetwork = new SocialNetwork(numberOfEdges);
+            System.out.println(numberOfEdges);
             while (friendScanner.hasNextLine()) {
+                linesInFriendsFile++;
                 String edgeData = friendScanner.nextLine();
                 String[] edges = edgeData.split(" ");
                 int[] ary = new int[edges.length];
                 int i = 0;
                 for (String edge : edges)
                     ary[i++] = Integer.parseInt(edge);
-//                System.out.println(Arrays.toString(ary));      //returns the line that was skipped
+
+//                System.out.println(Arrays.toString(ary));
+//                socialNetwork.addEdge(ary[0], ary[1]);
+                socialNetwork.addEdge(0, 1);
+                socialNetwork.addEdge(0, 2);
+                socialNetwork.addEdge(0, 3);
+                socialNetwork.addEdge(0, 4);
+                socialNetwork.addEdge(1, 4);
+
+            }
+
+            if(linesInFriendsFile -1 != numberOfEdges) {
+                throw new IOException("number edges in file is wrong");
             }
             friendScanner.close();
-            Graph mygraph = new Graph(4);
-            if(false) {
-                throw new IOException("number of file is wrong");
+            FileInputStream index = new FileInputStream("index.txt");
+            Scanner indexScanner = new Scanner(index);
+            int linesInIndexFile = 1;
+            int numberOfPeople = Integer.parseInt(indexScanner.nextLine());
+            if (indexScanner.hasNextLine()) {
+                linesInIndexFile++;
+                indexScanner.nextLine();
             }
-            return mygraph;
+            while (indexScanner.hasNextLine()) {
+                linesInIndexFile++;
+                String peopleData = indexScanner.nextLine();
+                String[] people = peopleData.split(" ");
+                String[] ary = new String[people.length];
+                int i = 0;
+                for (String person : people)
+                    ary[i++] = person;
+//                socialNetwork.setLabel(Integer.parseInt(ary[0]), ary[1]);
+                socialNetwork.setLabel(0, "frank");
+            }
+            if(linesInIndexFile != numberOfPeople) {
+                throw new IOException("number people in file is wrong");
+            }
+            indexScanner.close();
+            return socialNetwork;
         } catch (FileNotFoundException e) {
             throw new IOException("Files not found");
         } catch (IOException e) {
