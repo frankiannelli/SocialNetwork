@@ -28,6 +28,7 @@ public class Main {
                         loadingMenuOption = 4;
                         break;
                     case 3:
+                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
                         System.out.println("Program ended - Goodbye");
                         System.exit(0);
                     default:
@@ -44,31 +45,65 @@ public class Main {
 
                         break;
                     case 2:
+                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
                         System.out.println("Please enter the user name you would like to search for");
-//                        Scanner keyboard = new Scanner(System.in);
-                        String name = keyboard.nextLine();
+                        String nameFof = keyboard.nextLine();
                         ArrayList<String> graphUsers = new ArrayList<String>();
                         for(int i = 0; i < socialNetwork.size(); i++){
                             graphUsers.add(String.valueOf(socialNetwork.getLabel(i)));
                         }
-                        if(graphUsers.contains(name)){
-                            int[] neighbours = socialNetwork.neighbors(graphUsers.indexOf(name));
+                        if(graphUsers.contains(nameFof)){
+                            int[] neighbours = socialNetwork.neighbors(graphUsers.indexOf(nameFof));
+                            System.out.println(Arrays.toString(neighbours));
                             Set<String> friends = new HashSet<String>();
                             for(int i = 0; i < neighbours.length; i++){
+                                System.out.println(friends + " sss1");
                                 friends.add(String.valueOf(socialNetwork.getLabel(neighbours[i])));
                                 int[] neighboursNeighbours = socialNetwork.neighbors(neighbours[i]);
+                                System.out.println(Arrays.toString(neighboursNeighbours) + "neineigh");
                                 for(int j = 0; j < neighboursNeighbours.length; j++){
-                                    friends.add(String.valueOf(socialNetwork.getLabel(neighboursNeighbours[i])));
+                                    System.out.println(friends + " sss2");
+                                    friends.add(String.valueOf(socialNetwork.getLabel(neighboursNeighbours[j])));
                                 }
                             }
-                            System.out.println(friends);
+                            friends.remove(nameFof);
+                            System.out.println("The friends and friends of friends for " + nameFof + " are\n");
+                            Iterator<String> itr = friends.iterator();
+                           while(itr.hasNext()){
+                                System.out.println(itr.next());
+                            }
+                            System.out.println("\nPress enter to continue");
+                            keyboard.nextLine();
                         } else {
                             System.out.println("user not in the graph press enter to continue");
-                            String enter = keyboard.nextLine();
+                            keyboard.nextLine();
                         }
                         break;
                     case 3:
-                        System.out.println("message");
+                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                        System.out.println("Please enter the user name you would like to search for");
+                        String nameF = keyboard.nextLine();
+                        ArrayList<String> graphUsers2 = new ArrayList<String>();
+                        for(int i = 0; i < socialNetwork.size(); i++){
+                            graphUsers2.add(String.valueOf(socialNetwork.getLabel(i)));
+                        }
+                        if(graphUsers2.contains(nameF)){
+                            int[] neighbours = socialNetwork.neighbors(graphUsers2.indexOf(nameF));
+                            Set<String> friends = new HashSet<String>();
+                            for(int i = 0; i < neighbours.length; i++){
+                                friends.add(String.valueOf(socialNetwork.getLabel(neighbours[i])));
+                            }
+                            System.out.println("The friends for " + nameF + " are\n");
+                            Iterator<String> itr = friends.iterator();
+                            while(itr.hasNext()){
+                                System.out.println(itr.next());
+                            }
+                            System.out.println("\nPress enter to continue");
+                            keyboard.nextLine();
+                        } else {
+                            System.out.println("user not in the graph press enter to continue");
+                            keyboard.nextLine();
+                        }
                         break;
                     case 4:
                         System.out.println("message");
@@ -80,6 +115,7 @@ public class Main {
                         System.out.println("message");
                         break;
                     case 7:
+                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
                         System.out.println("Program ended - Goodbye");
                         System.exit(0);
                     default:
@@ -146,6 +182,7 @@ public class Main {
     private static int showMainMenu() {
         int option = 0;
         Scanner keyboard = new Scanner(System.in);
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
         System.out.println("Main Menu:");
         System.out.println("--------------");
         System.out.println("1.Load new files");

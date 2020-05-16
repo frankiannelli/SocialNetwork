@@ -5,3 +5,5 @@ that 2 menu 2 the user does not want to see the relationship of the original use
 ## Things to fix
 
 the file validation logic is not right because if the graph is intastaited with the wrng number of nodes then it fails
+
+in the menu's if you type a string instead of int it throws an error

@@ -1,5 +1,7 @@
 package graph;
 
+import java.util.ArrayList;
+
 public class SocialNetwork extends Graph {
     public SocialNetwork(int n) {
         super(n);
@@ -18,4 +20,5 @@ public class SocialNetwork extends Graph {
         super.removeEdge(source, target);
         super.removeEdge(target, source);
     }
+
 }
