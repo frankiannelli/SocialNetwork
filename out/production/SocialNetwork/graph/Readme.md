@@ -11,3 +11,12 @@ the file validation logic is not right because if the graph is intastaited with 
 in the menu's if you type a string instead of int it throws an error
 
 using coretto had to use map.entry instead of just Entry check if this is ok
+
+
+Questions
+
+how do i implement the delete node
+should searching be case sensitive
+does the file have to be called driver
+is it ok to have a package
+what files? graph, main, social network
