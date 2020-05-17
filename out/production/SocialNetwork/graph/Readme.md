@@ -12,6 +12,10 @@ in the menu's if you type a string instead of int it throws an error
 
 using coretto had to use map.entry instead of just Entry check if this is ok
 
+remove null from the searches when we set a node to null
+eg the null shouldnt appear in the popular list
+
+
 
 Questions
 

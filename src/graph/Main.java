@@ -1,10 +1,8 @@
 package graph;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -16,26 +14,29 @@ public class Main {
             // set default file names for the graph
             // these will be replaced if the user selects the corresponding menu item
             String[] loadingFiles = {"index.txt", "friends.txt"};
-            while (loadingMenuOption != 4) {
+            while (loadingMenuOption != 3) {
                 loadingMenuOption = showLoadingMenu();
                 switch (loadingMenuOption) {
                     case 1:
                         // set loading menu to 4 so that the switch case breaks and goes to main menu
-                        loadingMenuOption = 4;
+                        loadingMenuOption = 3;
                         break;
                     case 2:
                         System.out.println("Enter the vertex file name");
                         loadingFiles[0] = keyboard.nextLine();
                         System.out.println("Enter the edge file name");
                         loadingFiles[1] = keyboard.nextLine();
-                        loadingMenuOption = 4;
+                        loadingMenuOption = 3;
                         break;
                     case 3:
                         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
                         System.out.println("Program ended - Goodbye");
                         System.exit(0);
                     default:
-                        System.out.println("Sorry, please enter valid Option");
+                        System.out.println("Invalid option selected");
+                        System.out.println("Please select a valid option");
+                        System.out.println("Press enter to continue");
+                        keyboard.nextLine();
                 }
             }
             // initialize the graph
@@ -220,7 +221,10 @@ public class Main {
                         System.exit(0);
                     default:
                         // catch any entries that are not valid and ask the user to resubmit
-                        System.out.println("Sorry, please enter valid Option");
+                        System.out.println("Invalid option selected");
+                        System.out.println("Please select a valid option");
+                        System.out.println("Press enter to continue");
+                        keyboard.nextLine();
                 }
             }
         } catch (FileNotFoundException e) {
@@ -299,41 +303,54 @@ public class Main {
      * @return An int specifying the menu option the users selected.
      */
     private static int showMainMenu() {
-        int option = 0;
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        System.out.println("Main Menu:");
-        System.out.println("--------------");
-        System.out.println("1.Get users friends and friends of friends");
-        System.out.println("2.Get users friends");
-        System.out.println("3.Get common friends between 2 users");
-        System.out.println("4.Delete user and relationships");
-        System.out.println("5.Print user list sorted by popularity");
-        System.out.println("6.Quit");
-        System.out.println("--------------");
-        System.out.println("Enter your choice:");
-        option = keyboard.nextInt();
+        try{
+            int option = 0;
+            Scanner keyboard = new Scanner(System.in);
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("Main Menu:");
+            System.out.println("--------------");
+            System.out.println("1.Get users friends and friends of friends");
+            System.out.println("2.Get users friends");
+            System.out.println("3.Get common friends between 2 users");
+            System.out.println("4.Delete user and relationships");
+            System.out.println("5.Print user list sorted by popularity");
+            System.out.println("6.Quit");
+            System.out.println("--------------");
+            System.out.println("Enter your choice:");
+            option = keyboard.nextInt();
 
-        return option;
+            return option;
+        } catch (InputMismatchException e){
+            System.out.println("Please select a NUMBER");
+            System.out.println("Valid options are 1, 2, 3, 4, 5, and 6");
+            return 0;
+        }
+
     }
     /** Displays the loading menu.
      * @return An int specifying the menu option the users selected.
      */
     private static int showLoadingMenu() {
-        int option = 0;
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("SOCIAL NETWORK PROGRAM:");
-        System.out.println("--------------");
-        System.out.println("Welcome to the social network program");
-        System.out.println("--------------");
-        System.out.println("1.Start with default network");
-        System.out.println("2.Load a network from different files");
-        System.out.println("3.Quit");
-        System.out.println("--------------");
-        System.out.println("Enter your choice:");
-        option = keyboard.nextInt();
+        try{
+            int option = 0;
+            Scanner keyboard = new Scanner(System.in);
+            System.out.println("SOCIAL NETWORK PROGRAM:");
+            System.out.println("--------------");
+            System.out.println("Welcome to the social network program");
+            System.out.println("--------------");
+            System.out.println("1.Start with default network");
+            System.out.println("2.Load a network from different files");
+            System.out.println("3.Quit");
+            System.out.println("--------------");
+            System.out.println("Enter your choice:");
+            option = keyboard.nextInt();
 
-        return option;
+            return option;
+        } catch (InputMismatchException e){
+            System.out.println("Please select a NUMBER");
+            System.out.println("Valid options are 1, 2 and 3");
+            return 0;
+        }
     }
 
     /** Get the labels for the vertices in the graph.
