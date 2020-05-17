@@ -10,10 +10,10 @@ public class Main {
     public static void main(String[] args) {
         try {
             Scanner keyboard = new Scanner(System.in);
-           int loadingMenuOption = 0;
             // set default file names for the graph
             // these will be replaced if the user selects the corresponding menu item
             String[] loadingFiles = {"index.txt", "friends.txt"};
+            int loadingMenuOption = 0;
             while (loadingMenuOption != 3) {
                 loadingMenuOption = showLoadingMenu();
                 switch (loadingMenuOption) {
@@ -29,7 +29,7 @@ public class Main {
                         loadingMenuOption = 3;
                         break;
                     case 3:
-                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                        System.out.println("\n\n");
                         System.out.println("Program ended - Goodbye");
                         System.exit(0);
                     default:
@@ -41,12 +41,13 @@ public class Main {
             }
             // initialize the graph
             Graph socialNetwork = loadFiles(loadingFiles[0], loadingFiles[1]);
-            int option = 0;
-            while (option != 6) {
-                option = showMainMenu();
+            // while loop true as we always want the user in the menu
+            // until the choose the exit command which will shut down the program
+            while (true) {
+                int option = showMainMenu();
                 switch (option) {
                     case 1:
-                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                        System.out.println("\n\n");
                         System.out.println("Please enter the user name you would like to search for");
                         String nameFof = keyboard.nextLine();
                         ArrayList<String> graphUsers = getGraphUsers(socialNetwork);
@@ -57,28 +58,27 @@ public class Main {
                             // add all these vertices to a set so that we remove duplicates
                             // finally remove the vertex for the originally requested vertex
                             int[] neighbours = socialNetwork.neighbors(graphUsers.indexOf(nameFof));
-                            Set<String> friends = new HashSet<String>();
-                            for(int i = 0; i < neighbours.length; i++){
-                                friends.add(String.valueOf(socialNetwork.getLabel(neighbours[i])));
-                                int[] neighboursNeighbours = socialNetwork.neighbors(neighbours[i]);
-                                for(int j = 0; j < neighboursNeighbours.length; j++){
-                                    friends.add(String.valueOf(socialNetwork.getLabel(neighboursNeighbours[j])));
+                            Set<String> friends = new HashSet<>();
+                            for (int neighbour : neighbours) {
+                                friends.add(String.valueOf(socialNetwork.getLabel(neighbour)));
+                                int[] neighboursNeighbours = socialNetwork.neighbors(neighbour);
+                                for (int neighboursNeighbour : neighboursNeighbours) {
+                                    friends.add(String.valueOf(socialNetwork.getLabel(neighboursNeighbour)));
                                 }
                             }
                             friends.remove(nameFof);
                             System.out.println("\nThe friends and friends of friends for " + nameFof + " are\n");
-                            Iterator<String> itr = friends.iterator();
-                           while(itr.hasNext()){
-                                System.out.println(itr.next());
+                            for (String friend : friends) {
+                                System.out.println(friend);
                             }
                             System.out.println("\nPress enter to continue");
                         } else {
-                            System.out.println("user not in the graph press enter to continue");
+                            System.out.println("User not in the graph press enter to continue");
                         }
                         keyboard.nextLine();
                         break;
                     case 2:
-                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                        System.out.println("\n\n");
                         System.out.println("Please enter the user name you would like to search for");
                         String nameF = keyboard.nextLine();
                         ArrayList<String> graphUsers2 = getGraphUsers(socialNetwork);
@@ -87,23 +87,22 @@ public class Main {
                             // i opted to not abstract this logic out as there are slight differences
                             // in the way we are handling the 2 cases
                             int[] neighbours = socialNetwork.neighbors(graphUsers2.indexOf(nameF));
-                            Set<String> friends = new HashSet<String>();
-                            for(int i = 0; i < neighbours.length; i++){
-                                friends.add(String.valueOf(socialNetwork.getLabel(neighbours[i])));
+                            Set<String> friends = new HashSet<>();
+                            for (int neighbour : neighbours) {
+                                friends.add(String.valueOf(socialNetwork.getLabel(neighbour)));
                             }
                             System.out.println("\nThe friends for " + nameF + " are\n");
-                            Iterator<String> itr = friends.iterator();
-                            while(itr.hasNext()){
-                                System.out.println(itr.next());
+                            for (String friend : friends) {
+                                System.out.println(friend);
                             }
                             System.out.println("\nPress enter to continue");
                         } else {
-                            System.out.println("user not in the graph press enter to continue");
+                            System.out.println("User not in the graph press enter to continue");
                         }
                         keyboard.nextLine();
                         break;
                     case 3:
-                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                        System.out.println("\n\n");
                         System.out.println("Please enter the first user name you would like to find common friends");
                         String nameC1 = keyboard.nextLine();
                         System.out.println("Please enter the second user name you would like to find common friends");
@@ -118,20 +117,19 @@ public class Main {
                         if(graphUsers3.contains(nameC1) && graphUsers3.contains(nameC2)) {
                             int[] c1Neighbours = socialNetwork.neighbors(graphUsers3.indexOf(nameC1));
                             int[] c2Neighbours = socialNetwork.neighbors(graphUsers3.indexOf(nameC2));
-                            Set<String> commonFriends = new HashSet<String>();
-                            for(int i=0; i < c1Neighbours.length; i++){
-                                for(int j=0; j < c2Neighbours.length; j++){
-                                    if(c1Neighbours[i] == c2Neighbours[j]){
-                                        commonFriends.add(String.valueOf(socialNetwork.getLabel(c1Neighbours[i])));
+                            Set<String> commonFriends = new HashSet<>();
+                            for (int c1Neighbour : c1Neighbours) {
+                                for (int c2Neighbour : c2Neighbours) {
+                                    if (c1Neighbour == c2Neighbour) {
+                                        commonFriends.add(String.valueOf(socialNetwork.getLabel(c1Neighbour)));
                                     }
                                 }
                             }
                             commonFriends.remove(nameC1);
                             commonFriends.remove(nameC2);
                             System.out.println("\nThe common friends for " + nameC1 + " and " + nameC2 + " are\n");
-                            Iterator<String> itr = commonFriends.iterator();
-                            while(itr.hasNext()){
-                                System.out.println(itr.next());
+                            for (String commonFriend : commonFriends) {
+                                System.out.println(commonFriend);
                             }
                             System.out.println("\nPress enter to continue");
                         } else {
@@ -140,7 +138,7 @@ public class Main {
                         keyboard.nextLine();
                         break;
                     case 4:
-                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                        System.out.println("\n\n");
                         System.out.println("Please enter the user name you would like to remove from the graph");
                         String deleteName = keyboard.nextLine();
                         ArrayList<String> graphUsers4 = getGraphUsers(socialNetwork);
@@ -172,9 +170,9 @@ public class Main {
                         keyboard.nextLine();
                         break;
                     case 5:
-                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                        System.out.println("\n\n");
                         System.out.println("REPORT\n\nUsers sorted by most popular\n");
-                        HashMap<String, Integer> popularUsers = new HashMap<String, Integer>();
+                        HashMap<String, Integer> popularUsers = new HashMap<>();
                         // first create a hash map of the users and their respective number of friends
                         for(int m = 0; m < socialNetwork.size(); m++){
                             String namePop = String.valueOf(socialNetwork.getLabel(m));
@@ -186,20 +184,17 @@ public class Main {
                         // can do this by writing a comparator, which takes
                         // Map.Entry object and arrange them in order decreasing by values.
 
-                        Comparator<Map.Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String,Integer>>() {
-                            @Override
-                            public int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
-                                Integer v1 = e1.getValue();
-                                Integer v2 = e2.getValue();
-                                return v2.compareTo(v1);
-                            }
+                        Comparator<Map.Entry<String, Integer>> valueComparator = (e1, e2) -> {
+                            Integer v1 = e1.getValue();
+                            Integer v2 = e2.getValue();
+                            return v2.compareTo(v1);
                         };
                         Set<Map.Entry<String, Integer>> entries = popularUsers.entrySet();
                         // Sort method needs a List, so let's first convert Set to List in Java
-                        List<Map.Entry<String, Integer>> listOfEntries = new ArrayList<Map.Entry<String, Integer>>(entries);
+                        List<Map.Entry<String, Integer>> listOfEntries = new ArrayList<>(entries);
                         // sorting HashMap by values using comparator
-                        Collections.sort(listOfEntries, valueComparator);
-                        LinkedHashMap<String, Integer> sortedUsersByValue = new LinkedHashMap<String, Integer>(listOfEntries.size());
+                        listOfEntries.sort(valueComparator);
+                        LinkedHashMap<String, Integer> sortedUsersByValue = new LinkedHashMap<>(listOfEntries.size());
                         // copying entries from List to Map
                         for(Map.Entry<String, Integer> entry : listOfEntries){
                             sortedUsersByValue.put(entry.getKey(), entry.getValue());
@@ -216,7 +211,7 @@ public class Main {
                         keyboard.nextLine();
                         break;
                     case 6:
-                        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                        System.out.println("\n\n");
                         System.out.println("Program ended - Goodbye");
                         System.exit(0);
                     default:
@@ -295,8 +290,6 @@ public class Main {
         } catch (FileNotFoundException e) {
             // if the file names are not found throw an error
             throw new IOException("1 or more files not found,\nPlease check file path and try again");
-        } catch (IOException e) {
-            throw e;
         }
     }
     /** Displays the main menu.
@@ -304,9 +297,8 @@ public class Main {
      */
     private static int showMainMenu() {
         try{
-            int option = 0;
+            int option;
             Scanner keyboard = new Scanner(System.in);
-            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
             System.out.println("Main Menu:");
             System.out.println("--------------");
             System.out.println("1.Get users friends and friends of friends");
@@ -332,7 +324,7 @@ public class Main {
      */
     private static int showLoadingMenu() {
         try{
-            int option = 0;
+            int option;
             Scanner keyboard = new Scanner(System.in);
             System.out.println("SOCIAL NETWORK PROGRAM:");
             System.out.println("--------------");
@@ -357,7 +349,7 @@ public class Main {
      * @return A string array list with all the labels of the vertices in the graph.
      */
     private static ArrayList<String> getGraphUsers(Graph graph) {
-        ArrayList<String> graphUsers = new ArrayList<String>();
+        ArrayList<String> graphUsers = new ArrayList<>();
         for(int i = 0; i < graph.size(); i++){
             graphUsers.add(String.valueOf(graph.getLabel(i)));
         }
