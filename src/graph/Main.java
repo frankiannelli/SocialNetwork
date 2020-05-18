@@ -12,7 +12,8 @@ public class Main {
             Scanner keyboard = new Scanner(System.in);
             // set default file names for the graph
             // these will be replaced if the user selects the corresponding menu item
-            String[] loadingFiles = {"index.txt", "friends.txt"};
+            String defaultVertexFile = "index.txt";
+            String defaultEdgeFile = "friends.txt";
             int loadingMenuOption = 0;
             while (loadingMenuOption != 3) {
                 loadingMenuOption = showLoadingMenu();
@@ -23,9 +24,9 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("Enter the vertex file name");
-                        loadingFiles[0] = keyboard.nextLine();
+                        defaultVertexFile = keyboard.nextLine();
                         System.out.println("Enter the edge file name");
-                        loadingFiles[1] = keyboard.nextLine();
+                        defaultEdgeFile = keyboard.nextLine();
                         loadingMenuOption = 3;
                         break;
                     case 3:
@@ -40,7 +41,7 @@ public class Main {
                 }
             }
             // initialize the graph
-            Graph socialNetwork = loadFiles(loadingFiles[0], loadingFiles[1]);
+            Graph socialNetwork = loadFiles(defaultVertexFile, defaultEdgeFile);
             // while loop true as we always want the user in the menu
             // until the choose the exit command which will shut down the program
             while (true) {
@@ -48,6 +49,12 @@ public class Main {
                 switch (option) {
                     case 1:
                         System.out.println("\n\n");
+                        if(socialNetwork.size() == 0){
+                            System.out.println("The graph is empty");
+                            System.out.println("\nPress enter to continue");
+                            keyboard.nextLine();
+                            break;
+                        }
                         System.out.println("Please enter the user name you would like to search for");
                         String nameFof = keyboard.nextLine();
                         ArrayList<String> graphUsers = getGraphUsers(socialNetwork);
@@ -79,6 +86,12 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("\n\n");
+                        if(socialNetwork.size() == 0){
+                            System.out.println("The graph is empty");
+                            System.out.println("\nPress enter to continue");
+                            keyboard.nextLine();
+                            break;
+                        }
                         System.out.println("Please enter the user name you would like to search for");
                         String nameF = keyboard.nextLine();
                         ArrayList<String> graphUsers2 = getGraphUsers(socialNetwork);
@@ -103,6 +116,12 @@ public class Main {
                         break;
                     case 3:
                         System.out.println("\n\n");
+                        if(socialNetwork.size() == 0){
+                            System.out.println("The graph is empty");
+                            System.out.println("\nPress enter to continue");
+                            keyboard.nextLine();
+                            break;
+                        }
                         System.out.println("Please enter the first user name you would like to find common friends");
                         String nameC1 = keyboard.nextLine();
                         System.out.println("Please enter the second user name you would like to find common friends");
@@ -139,6 +158,12 @@ public class Main {
                         break;
                     case 4:
                         System.out.println("\n\n");
+                        if(socialNetwork.size() == 0){
+                            System.out.println("The graph is empty");
+                            System.out.println("\nPress enter to continue");
+                            keyboard.nextLine();
+                            break;
+                        }
                         System.out.println("Please enter the user name you would like to remove from the graph");
                         String deleteName = keyboard.nextLine();
                         ArrayList<String> graphUsers4 = getGraphUsers(socialNetwork);
@@ -149,21 +174,28 @@ public class Main {
                             System.out.println("2.Cancel");
                             System.out.println("--------------");
                             System.out.println("Enter your choice:");
-                            int isSure = keyboard.nextInt();
-                            if (isSure != 1) {
-                                System.out.println("Cancelled - press enter to continue");
-                            } else {
-                                // first delete the edges of the vertex
-                                // then set the label on the vertex to null
-                                int delIndex = graphUsers4.indexOf(deleteName);
-                                int[] delNeighbours = socialNetwork.neighbors(delIndex);
-                                for(int v=0; v < delNeighbours.length; v++){
-                                    socialNetwork.removeEdge(delIndex, v);
-                                }
-                                socialNetwork.setLabel(delIndex, null);
-                                System.out.println(deleteName + " has been deleted from the social network - press enter to continue");
-                            }
-                            keyboard.nextLine();
+                           try{
+                               int isSure = keyboard.nextInt();
+                               if (isSure != 1) {
+                                   System.out.println("Cancelled - press enter to continue");
+                               } else {
+                                   // first delete the edges of the vertex
+                                   // then set the label on the vertex to null
+                                   int delIndex = graphUsers4.indexOf(deleteName);
+                                   int[] delNeighbours = socialNetwork.neighbors(delIndex);
+                                   for(int v=0; v < delNeighbours.length; v++){
+                                       socialNetwork.removeEdge(delIndex, delNeighbours[v]);
+                                   }
+                                   socialNetwork.setLabel(delIndex, null);
+                                   System.out.println(deleteName + " has been deleted from the social network - press enter to continue");
+                               }
+                               keyboard.nextLine();
+                           } catch (InputMismatchException e){
+                               System.err.println("Please select a NUMBER");
+                               System.err.println("Valid options are 1 and 2");
+                               System.err.println("Deletion cancelled, press enter to continue");
+                               keyboard.nextLine();
+                           }
                         } else {
                             System.out.println("User not in the graph press enter to continue");
                         }
@@ -171,13 +203,23 @@ public class Main {
                         break;
                     case 5:
                         System.out.println("\n\n");
+                        if(socialNetwork.size() == 0){
+                            System.out.println("The graph is empty");
+                            System.out.println("\nPress enter to continue");
+                            keyboard.nextLine();
+                            break;
+                        }
                         System.out.println("REPORT\n\nUsers sorted by most popular\n");
                         HashMap<String, Integer> popularUsers = new HashMap<>();
                         // first create a hash map of the users and their respective number of friends
                         for(int m = 0; m < socialNetwork.size(); m++){
                             String namePop = String.valueOf(socialNetwork.getLabel(m));
                             int connections = socialNetwork.neighbors(m).length;
-                            popularUsers.put(namePop, connections);
+                            // only add users to the hash map if their label is not null
+                            // this is in case a user has been removed from the graph
+                            if(namePop != "null"){
+                                popularUsers.put(namePop, connections);
+                            }
                         }
                         // Now sort the HashMap by values
                         // there is no direct way to sort HashMap by values but you
@@ -199,11 +241,11 @@ public class Main {
                         for(Map.Entry<String, Integer> entry : listOfEntries){
                             sortedUsersByValue.put(entry.getKey(), entry.getValue());
                         }
+                        // display in a table layout
                         System.out.printf("%-13s %-4s %-4s \n", "Username", " | ", "Number of Friends");
                         System.out.println("____________________________________");
                         Set<Map.Entry<String, Integer>> entrySetSortedByValue = sortedUsersByValue.entrySet();
                         for(Map.Entry<String, Integer> mapping : entrySetSortedByValue){
-                            // print with a table layout
                             System.out.printf("%-13s %-8s %4s \n", mapping.getKey(), " | ", mapping.getValue());
                         }
 
@@ -229,21 +271,29 @@ public class Main {
         }
     }
 
-    /** Reads the data files as default or user specified.
-     * validates that the files have the correct data.
+    /** Reads the data files from default path or user specified path.
+     * Validates that the files have the correct data.
      * If correct then returns a graph with the relevent vertices and edges
-     * @return A graph initialised with the vertices and edges as supllied by the verified data files.
+     * @param vertexFileName
+     *   a <CODE>String</CODE> file name saving the vertices
+     * @param edgeFileName
+     *   a <CODE>String</CODE> file name saving the edges
+     * @return A graph initialised with the vertices and edges as supplied by the verified data files.
      */
     private static Graph loadFiles (String vertexFileName, String edgeFileName) throws IOException {
         try {
             FileInputStream vertexStream = new FileInputStream(vertexFileName);
             Scanner vertexScanner = new Scanner(vertexStream);
+            // keep track of the lines in the file to validate the data
             int linesInVertexFile = 0;
             int numberOfVertices = Integer.parseInt(vertexScanner.nextLine());
             linesInVertexFile++;
             // Read in the file with vertices and data and initialize the graph
             Graph socialNetwork = new SocialNetwork(numberOfVertices);
-            while (vertexScanner.hasNextLine()) {
+            // only run this loop while the size of the network is larger than the number of line in the file
+            // otherwise we get an index array out of bounds error
+            // no need to catch this error because we handle the file data validation further down
+            while (vertexScanner.hasNextLine() && socialNetwork.size() >= linesInVertexFile -1) {
                 // iterate through each line in the vertices file and add them to the graph
                 linesInVertexFile++;
                 String peopleData = vertexScanner.nextLine();
@@ -263,6 +313,7 @@ public class Main {
             vertexScanner.close();
             FileInputStream edgeStream = new FileInputStream(edgeFileName);
             Scanner edgeScanner = new Scanner(edgeStream);
+            // keep track of the lines in the file to validate the data
             int linesInEdgeFile = 0;
             int numberOfEdges = Integer.parseInt(edgeScanner.nextLine());
             linesInEdgeFile++;
@@ -290,9 +341,12 @@ public class Main {
         } catch (FileNotFoundException e) {
             // if the file names are not found throw an error
             throw new IOException("1 or more files not found,\nPlease check file path and try again");
+        } catch (NumberFormatException e){
+            throw new IOException("1 or more of the files you loaded is the wrong format");
         }
     }
     /** Displays the main menu.
+     * @param - none
      * @return An int specifying the menu option the users selected.
      */
     private static int showMainMenu() {
@@ -313,13 +367,14 @@ public class Main {
 
             return option;
         } catch (InputMismatchException e){
-            System.out.println("Please select a NUMBER");
-            System.out.println("Valid options are 1, 2, 3, 4, 5, and 6");
+            System.err.println("Please select a NUMBER");
+            System.err.println("Valid options are 1, 2, 3, 4, 5, and 6");
             return 0;
         }
 
     }
     /** Displays the loading menu.
+     * @param - none
      * @return An int specifying the menu option the users selected.
      */
     private static int showLoadingMenu() {
@@ -339,13 +394,15 @@ public class Main {
 
             return option;
         } catch (InputMismatchException e){
-            System.out.println("Please select a NUMBER");
-            System.out.println("Valid options are 1, 2 and 3");
+            System.err.println("Please select a NUMBER");
+            System.err.println("Valid options are 1, 2 and 3");
             return 0;
         }
     }
 
     /** Get the labels for the vertices in the graph.
+     * @param graph
+     *   a nonnull <CODE>Graph</CODE>
      * @return A string array list with all the labels of the vertices in the graph.
      */
     private static ArrayList<String> getGraphUsers(Graph graph) {
